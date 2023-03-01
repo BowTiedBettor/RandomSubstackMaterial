@@ -207,13 +207,13 @@ possible_values = np.linspace(-0.5, 0.5, 100)
 # furthermore, we'll do this at three different steps, after 100 bets, after 250 bets
 # and after 500 bets to illustrate how a bayesian bettor learns through time
 
-# for use below
+# for use below, change the number_of_bets & true_roi parameters
 # actual roi after 100 bets = 0.107
 # actual roi after 250 bets = 0.322
 # actual roi after 500 bets = 0.333
-number_of_bets = 500
-true_roi = 0.333
-number_of_simulations = 10000 # would like this to be much bigger but can't wait for hours
+number_of_bets = 100
+true_roi = 0.107
+number_of_simulations = 10000 # would like this to be bigger but can't wait for hours
 
 likelihoods = [] # will hold the likelihood for each ev in possible_values
 sum_all_paths = 0 # the denominator in the bayesian expression [normalization constant]
