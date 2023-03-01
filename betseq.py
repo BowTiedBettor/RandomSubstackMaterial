@@ -187,42 +187,46 @@ Learning the truth, the bayesian way
 betseq_df = pd.read_excel("FILE PATH HERE")
 stakes_series = betseq_df['Stake']
 odds_series = betseq_df['Odds']
+# outcomes_series = betseq_df['Outcome']
 
-# an discrete approximation of the continuous uniform prior
+# a discrete approximation of the continuous uniform prior
 possible_values = np.linspace(-0.5, 0.5, 100)
-ev_prior = [0.01 for value in possible_values]
 
-# plot of prior
-plt.plot(possible_values, ev_prior)
-plt.title("Prior probability distribution of true EV, uniform [-0.50, 0.50]")
-plt.xlabel("EV")
-plt.ylabel("Density")
-plt.tick_params(labelleft=False, left=False)
-plt.show()
+# ev_prior = [0.01 for value in possible_values]
+# # plot of prior
+# plt.plot(possible_values, ev_prior)
+# plt.title("Prior probability distribution of true EV, uniform [-0.50, 0.50]")
+# plt.xlabel("EV")
+# plt.ylabel("Density")
+# plt.tick_params(labelleft=False, left=False)
+# plt.show()
 
 # we'll define the event "seeing a roi of X" as being in the range [x-0.05, x+0.05]
 # therefore we want to, for each ev in our range of possible ev values, compute
 # the probability of the sequence landing in the [actual roi-0.05, actual roi+0.05] range
 # furthermore, we'll do this at three different steps, after 100 bets, after 250 bets
 # and after 500 bets to illustrate how a bayesian bettor learns through time
-number_of_bets = 500
-true_roi = 0.333
 
-# for use above
+# for use below
 # actual roi after 100 bets = 0.107
 # actual roi after 250 bets = 0.322
 # actual roi after 500 bets = 0.333
+number_of_bets = 500
+true_roi = 0.333
 number_of_simulations = 10000 # would like this to be much bigger but can't wait for hours
 
-likelihoods = []
-sum_all_paths = 0 # the denominator in the bayesian expression
+likelihoods = [] # will hold the likelihood for each ev in possible_values
+sum_all_paths = 0 # the denominator in the bayesian expression [normalization constant]
 for ev in possible_values:
-    cum_PL = 0
-    cum_stakes = 0
-    roi_sim_results = [] # store the roi for each simulation
+    # for each possible ev we fix the ev, simulate the probability of seeing the
+    # real world observed roi *conditional* on this ev and store that
+    # value in the likelihoods list
+    roi_sim_results = [] # store the roi for each simulation, 10000 simulations about to run
     for i in range(number_of_simulations):
+        cum_PL = 0
+        cum_stakes = 0
         for stake, odds in zip(stakes_series[0:number_of_bets], odds_series[0:number_of_bets]):
-            prob = 1/odds*(1+ev)
+            prob = (1/odds)*(1+ev)
             cum_stakes += stake
             if random.random() < prob:
                 # if bet wins
@@ -232,6 +236,7 @@ for ev in possible_values:
                 cum_PL += -stake
         simulated_roi = cum_PL/cum_stakes
         roi_sim_results.append(simulated_roi)
+
     counter = 0
     for sim_res in roi_sim_results:
         if sim_res > true_roi - 0.05 and sim_res < true_roi + 0.05:
