@@ -11,7 +11,7 @@ cases = []
 game_nr = 1
 while True: 
     try: 
-        # generate the url & fetch game data [you could store more info & build your own db ofc, we don't care about that for now]
+        # generate the url & fetch game data [you could store the info youre interested in & build your own db ofc, we don't care about that for now]
         game_nr_str = str(game_nr)
         while len(game_nr_str) < 4: 
             game_nr_str = "0" + game_nr_str
