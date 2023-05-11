@@ -78,6 +78,3 @@ workbook = xlsxwriter.Workbook("NHLData.xlsx")
 workbook.close()
 with pd.ExcelWriter("NHLData.xlsx", mode='a', if_sheet_exists='overlay', engine = 'openpyxl') as writer:
     nhl_data_df.to_excel(writer)
-
-
-
